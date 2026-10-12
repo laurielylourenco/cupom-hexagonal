@@ -5,6 +5,12 @@ namespace App\Domain;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
+/**
+ * DOMÍNIO (núcleo da arquitetura hexagonal).
+ *
+ * Entidade com as regras de negócio do cupom: expiração, limite de uso e
+ * cálculo do desconto. É PHP puro: não conhece banco, HTTP nem Laravel.
+ */
 class Coupon
 {
     public function __construct(
