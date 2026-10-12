@@ -24,6 +24,26 @@ class Coupon
         return $this->code;
     }
 
+    public function getPercentage(): float
+    {
+        return $this->percentage;
+    }
+
+    public function getExpiresAt(): DateTimeImmutable
+    {
+        return $this->expiresAt;
+    }
+
+    public function getUsageLimit(): ?int
+    {
+        return $this->usageLimit;
+    }
+
+    public function getTimesUsed(): int
+    {
+        return $this->timesUsed;
+    }
+
     public function isExpired(DateTimeImmutable $now): bool
     {
         return $now > $this->expiresAt;
