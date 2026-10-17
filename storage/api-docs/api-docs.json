@@ -1,0 +1,255 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Cupom Hexagonal",
+        "description": "API para criar cupons de desconto e aplicá-los sobre um valor de compra.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Aplicação local"
+        }
+    ],
+    "paths": {
+        "/api/coupons": {
+            "post": {
+                "tags": [
+                    "Cupons"
+                ],
+                "summary": "Cria um cupom",
+                "description": "POST /api/coupons\n\nCria um cupom novo. O Form Request já garantiu o formato dos campos;\naqui só montamos os argumentos tipados e delegamos ao use case.",
+                "operationId": "createCoupon",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCoupon"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cupom criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Coupon"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Já existe um cupom com esse código",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Dados inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/coupons/{code}/apply": {
+            "post": {
+                "tags": [
+                    "Cupons"
+                ],
+                "summary": "Aplica um cupom sobre um valor",
+                "description": "POST /api/coupons/{code}/apply\n\nAplica o cupom sobre um valor (amount). O {code} vem da URL;\no amount vem do body (já validado).\n\nUsamos \"agora\" (DateTimeImmutable) para o domínio decidir expiração.",
+                "operationId": "applyCoupon",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "Código do cupom",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PROMO10"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApplyCoupon"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Desconto calculado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppliedCoupon"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cupom não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Cupom expirado, esgotado ou dados inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CreateCoupon": {
+                "required": [
+                    "code",
+                    "percentage",
+                    "expires_at"
+                ],
+                "properties": {
+                    "code": {
+                        "description": "Contrato OpenAPI do adaptador HTTP.\n\nFica na infraestrutura de entrada: descreve rotas, payloads e respostas.\nO domínio e os casos de uso não participam desta documentação.",
+                        "type": "string",
+                        "example": "PROMO10",
+                        "maxLength": 50
+                    },
+                    "percentage": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 10,
+                        "maximum": 100,
+                        "minimum": 0
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-12-31T23:59:59+00:00"
+                    },
+                    "usage_limit": {
+                        "type": "integer",
+                        "example": 100,
+                        "nullable": true,
+                        "minimum": 1
+                    }
+                },
+                "type": "object"
+            },
+            "Coupon": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "example": "PROMO10"
+                    },
+                    "percentage": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 10
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-12-31T23:59:59+00:00"
+                    },
+                    "usage_limit": {
+                        "type": "integer",
+                        "example": 100,
+                        "nullable": true
+                    },
+                    "times_used": {
+                        "type": "integer",
+                        "example": 0
+                    }
+                },
+                "type": "object"
+            },
+            "ApplyCoupon": {
+                "required": [
+                    "amount"
+                ],
+                "properties": {
+                    "amount": {
+                        "description": "Valor da compra sobre o qual o desconto é calculado",
+                        "type": "number",
+                        "format": "float",
+                        "example": 200,
+                        "minimum": 0
+                    }
+                },
+                "type": "object"
+            },
+            "AppliedCoupon": {
+                "properties": {
+                    "discount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 20
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorMessage": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Coupon PROMO10 already exists."
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationError": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "The code field is required."
+                    },
+                    "errors": {
+                        "type": "object",
+                        "example": {
+                            "code": [
+                                "The code field is required."
+                            ]
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Cupons",
+            "description": "Criar e aplicar cupons de desconto"
+        }
+    ]
+}
