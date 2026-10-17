@@ -132,6 +132,8 @@ sequenceDiagram
 - PHP / Laravel
 - PostgreSQL
 - Nginx
+- phpPgAdmin
+- Swagger (OpenAPI) em `/api/documentation`
 - Docker Compose
 
 ## Como rodar
@@ -140,4 +142,8 @@ sequenceDiagram
 docker compose up -d --build
 ```
 
-A aplicação ficará disponível em [http://localhost:8000](http://localhost:8000) (porta configurável via `APP_PORT`).
+- Aplicação: [http://localhost:8000](http://localhost:8000) (porta `APP_PORT`)
+- Swagger: [http://localhost:8000/api/documentation](http://localhost:8000/api/documentation)
+- phpPgAdmin: [http://localhost:8080](http://localhost:8080) (porta `PHPPGADMIN_PORT`)
+
+No phpPgAdmin, o servidor já aponta para o Postgres do Compose. Use o usuário e a senha de `DB_USERNAME` e `DB_PASSWORD` (padrão `cupom` / `secret`) e o banco `cupom`.
