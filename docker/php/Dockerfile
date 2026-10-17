@@ -11,18 +11,21 @@ RUN apk add --no-cache \
         libpq \
         libzip \
         postgresql-client \
+        sqlite-libs \
     && apk add --no-cache --virtual .build-deps \
         $PHPIZE_DEPS \
         icu-dev \
         libpq-dev \
         libzip-dev \
         linux-headers \
+        sqlite-dev \
     && docker-php-ext-install -j"$(nproc)" \
         bcmath \
         intl \
         opcache \
         pcntl \
         pdo_pgsql \
+        pdo_sqlite \
         pgsql \
         zip \
     && apk del .build-deps
