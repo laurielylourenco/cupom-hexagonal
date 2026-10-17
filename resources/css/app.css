@@ -2,8 +2,260 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../js/**/*.vue';
+@source '../views/**/*.blade.php';
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-cream: #f6f1e8;
+    --color-terracotta: #c45c26;
+    --color-ink: #2c2416;
+    --color-stamp: #a61b1b;
+    --shadow-paper: 0 1px 2px rgb(44 36 22 / 0.04), 0 10px 28px rgb(44 36 22 / 0.06);
+}
+
+body {
+    margin: 0;
+}
+
+.paper-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: 1.25rem;
+    background: #fff;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-paper);
+}
+
+.paper-card h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.field span {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.field input {
+    width: 100%;
+    border: 1px solid rgb(44 36 22 / 0.12);
+    border-radius: 0.7rem;
+    background: #fff;
+    padding: 0.7rem 0.8rem;
+    color: var(--color-ink);
+}
+
+.field input:focus {
+    outline: 2px solid rgb(44 36 22 / 0.18);
+    outline-offset: 1px;
+}
+
+.field input::placeholder {
+    color: rgb(44 36 22 / 0.35);
+}
+
+.code-input {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.percentage-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+
+.percentage-row .field {
+    flex: 1;
+}
+
+.mini-ticket {
+    display: flex;
+    min-width: 5.75rem;
+    min-height: 4.6rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.85rem;
+    background: var(--color-cream);
+    box-shadow: inset 0 0 0 1px rgb(44 36 22 / 0.06);
+    padding: 0.4rem 0.6rem;
+}
+
+.mini-ticket strong {
+    color: var(--color-terracotta);
+    font-size: 1.7rem;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.mini-ticket strong.is-empty {
+    color: rgb(44 36 22 / 0.35);
+}
+
+.btn {
+    width: 100%;
+    border: 0;
+    border-radius: 0.75rem;
+    background: var(--color-terracotta);
+    color: #fff;
+    font-weight: 600;
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+}
+
+.btn:disabled {
+    cursor: wait;
+    opacity: 0.55;
+}
+
+.apply-note {
+    margin: 0;
+    color: rgb(44 36 22 / 0.72);
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.stamp {
+    display: inline-block;
+    align-self: flex-start;
+    max-width: 100%;
+    margin: 0.15rem 0 0;
+    border: 2px solid var(--color-stamp);
+    border-radius: 2px;
+    color: var(--color-stamp);
+    padding: 0.2rem 0.45rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.35;
+    text-transform: uppercase;
+    transform: rotate(-1.5deg);
+}
+
+.ticket {
+    position: relative;
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: var(--shadow-paper);
+}
+
+.ticket-main,
+.ticket-stub {
+    padding: 1.15rem 1.35rem;
+}
+
+.ticket-code {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+}
+
+.ticket-percent {
+    margin: 0.35rem 0 0;
+    color: var(--color-terracotta);
+    font-size: 3rem;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.ticket-rip {
+    position: relative;
+    height: 0;
+    margin: 0 1.15rem;
+    border-top: 2px dashed #e4d9c8;
+}
+
+.ticket-rip::before,
+.ticket-rip::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 999px;
+    background: var(--color-cream);
+    box-shadow: inset 0 0 0 1px rgb(44 36 22 / 0.05);
+    transform: translateY(-50%);
+}
+
+.ticket-rip::before {
+    left: -1.15rem;
+    margin-left: -0.675rem;
+}
+
+.ticket-rip::after {
+    right: -1.15rem;
+    margin-right: -0.675rem;
+}
+
+.ticket-stub {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+}
+
+.ticket-stub div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.ticket-stub dt {
+    color: rgb(44 36 22 / 0.55);
+    font-size: 0.8rem;
+}
+
+.ticket-stub dd {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: right;
+}
+
+.receipt {
+    border-radius: 1rem;
+    background: #fff;
+    padding: 1.15rem 1.35rem 0.35rem;
+    box-shadow: var(--shadow-paper);
+}
+
+.receipt p {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0 0 0.85rem;
+    font-size: 0.95rem;
+}
+
+.receipt strong {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.receipt-discount,
+.receipt-discount strong {
+    color: var(--color-terracotta);
+}
+
+.receipt-due {
+    border-top: 2px dashed #e4d9c8;
+    padding-top: 0.85rem;
+    font-size: 1.05rem;
 }
